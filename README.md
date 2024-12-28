@@ -42,3 +42,8 @@ Explore vector databases and markdown repository projection.
 Use RSS reader. Integrate Instapaper API.
 
 Use a Ruby git client and a Gitlab/Github client.
+
+Way more stuff:
+
+* [Awesome Machine Learning with Ruby](https://github.com/arbox/machine-learning-with-ruby)
+* [AI Engineering Book: Resources](https://github.com/chiphuyen/aie-book/blob/main/resources.md)
