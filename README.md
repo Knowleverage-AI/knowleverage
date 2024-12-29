@@ -29,11 +29,52 @@ We are **passionate** about **learning, sharing knowledge and developing**.
 This framework **enpowers** us to use **AI for leveraging** the **assimilation
 of knowledge**.
 
-Stay tuned!
+## Agents
+
+[Solid Queue](https://github.com/rails/solid_queue) is used for providing a
+consistent handling and chaining of agents.
+
+### Getting started: extract from collection article
+
+A *collection article* is a web page containing a list of URLs to *single
+articles*, usually with some short-descriptive context.
+
+As an initial feature, the information contained in both the descriptions and
+the articles themselves shall be extracted and put into a markdown overview
+page and sub-pages for details, with sub-pages being defined by topics, not 1:1
+per single article.
+
+*Tasks to be implemented.*
+
+#### Prepare git branch
+
+*Assumption: markdown repository is empty and is accessible on Github.*
+
+1. Clone markdown repository into a data folder if not existing yet.
+1. Check out fresh branch.
+
+#### Extract single article references
+
+1. Read collection article.
+1. Extract URLs to single articles and their short descriptions.
+
+#### Extract knowledge from single articles
+
+1. Read single article.
+1. Summarize key points, grouped by (sub-) topics.
+1. Store information along with their (sub-) topics.
+1. Flush markdown files everytime an article got covered.
+
+NOTE: probably helpful to modelize topics and information in database.
+
+### Push changes, create merge request
+
+1. Push git changes for markdown repository.
+1. On first push, create merge request.
 
 ## Development
 
-### Next Steps
+### Next steps
 
 Evaluate [langchainrb](https://rubydoc.info/gems/langchainrb).
 
