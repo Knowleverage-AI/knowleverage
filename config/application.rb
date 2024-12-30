@@ -21,6 +21,8 @@ require "action_cable/engine"
 Bundler.require(*Rails.groups)
 
 module KnowleverageAi
+  # The main application configuration class.
+  # Contains configuration settings for the Rails application.
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.0
