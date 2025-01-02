@@ -6,9 +6,12 @@
 # This jobs extracts the single article URLs and their context descriptions,
 # and delegates their ingestion to a dedicated job.
 class IngestCollectionPageJob < ApplicationJob
+  include HasClient
+
   queue_as :default
 
-  def perform(*args)
+  def perform(url:)
+    @response = client.get(url)
     # binding.pry
   end
 end
