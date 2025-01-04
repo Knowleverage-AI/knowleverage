@@ -56,8 +56,10 @@ group :development, :test do
   gem "rubocop-rails-omakase", require: false
 
   # dependency of solargraph, specify version to resolve this warning:
-  #   warning: parser/current is loading parser/ruby34, which recognizes 3.4.0-compliant syntax, but you are running 3.4.1.
-  #   Please see https://github.com/whitequark/parser#compatibility-with-ruby-mri.
+  #   warning:
+  #     parser/current is loading parser/ruby34, which recognizes
+  #     3.4.0-compliant syntax, but you are running 3.4.1.
+  #     Please see https://github.com/whitequark/parser#compatibility-with-ruby-mri.
   # bundle exec gem dependency parser --reverse-dependencies
   gem "parser", "~> 3.3", require: false
 
