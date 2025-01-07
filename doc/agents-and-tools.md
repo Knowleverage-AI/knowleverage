@@ -18,6 +18,15 @@ Researcher
 * follow known sources
 * decide whether a publication is relevant for the set goals
 * extract information from publication
+* maintain a database of trusted sources
+
+Content Curator
+
+* organize and structure incoming information
+* maintain version history of content
+* archive deprecated content
+* ensure content traceability and attribution
+* manage content lifecycle
 
 Writer
 
@@ -32,56 +41,91 @@ Writer
 
 Visualizer
 
-* visualize sections of knowledge
+* create visual representations of knowledge
 * interpret existing visualizations and verify they match with the written text
 * add and update visualizations
+* maintain visualization style guidelines
+* optimize visual content for different platforms
 
 Speaker
 
-* read and talk about pieces of knowledge
+* create audio/video content explaining knowledge
+* host live sessions and webinars
+* develop presentation materials
+* maintain tone and style guidelines for spoken content
 
 Lector
 
-* maintain a list of quality criteria
+* maintain quality standards and style guides
 * review existing knowledge bases and changes
 * suggest improvements on methodology, correctness, style, completeness
 * review feedback of other lectors on same contents to enhance own lectoring skills
+* maintain templates and content guidelines
 
 Tutor
 
-* create questions, exercises, exams and even games to help users grasping the topics
+* create interactive learning materials (questions, exercises, exams, games)
 * help verifying and correcting the answers
-* analyze the learner's strengths and knowledge gaps to give learning directions
-* schedule repetitions to support the learner achieving her goals
+* analyze learner progress and knowledge gaps
+* provide personalized learning paths
+* schedule spaced repetitions for optimal retention
 
-Supporter
+User Support Specialist
 
-* assist users in quickly retrieving and understanding information they need
+* assist users in finding and understanding information
+* gather user feedback and report common issues
+* create user guides and FAQs
+* moderate user discussions and forums
+
+Community Manager
+
+* engage with user community
+* organize community events and challenges
+* manage user-generated content
+* moderate discussions and ensure community guidelines are followed
 
 Marketer/Promoter
 
-* spread the word about the knowledge base
-* target potential users where they are
-* write blog posts or newsletters about both the latest edits to the knowledge
-  base and how to generally benefit as a user
-* ask users for suggestions, needs and issues
-* collect and structure that feedback
-* evolve ideas based on that collection
+* develop and execute outreach strategies
+* create content marketing materials (blogs, newsletters, social media)
+* analyze user demographics and engagement
+* manage partnerships and collaborations
+* track and report on marketing KPIs
 
 Entrepreneur
 
-* overview the general development of the knowledge base
-* take user feedback into account for setting new directions
-* refine agent tasks
-* engage contributors and agents
-* gain and distribute resources
-* network with related projects
+* oversee project vision and strategy
+* secure funding and manage budgets
+* build partnerships and collaborations
+* manage intellectual property and legal aspects
+* ensure project sustainability and growth
 
-Developer
+Frontend Developer
 
-* integrate new features into the knowledge base project
-* make the knowledge base accessible wherever needed
-* format knowledge into what ever structure is needed
-* connect sources of information
-* integrate APIs and libraries
+* design and implement user interfaces
+* optimize user experience across devices
+* implement accessibility features
+* maintain frontend frameworks and libraries
+
+Backend Developer
+
+* manage knowledge base infrastructure
+* implement APIs and integrations
+* ensure system security and scalability
+* optimize content delivery and performance
+* maintain data storage and processing systems
+
+Translator
+
+* localize content for different languages and cultures
+* maintain translation memory and glossaries
+* ensure cultural appropriateness of content
+* coordinate with subject matter experts for accurate translations
+
+Validator
+
+* verify factual accuracy of content
+* ensure scientific validity and up-to-date information
+* cross-check references and citations
+* maintain accuracy standards and guidelines
 
