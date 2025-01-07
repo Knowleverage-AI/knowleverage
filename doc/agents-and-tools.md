@@ -132,12 +132,14 @@ git
 * commit changes
 * update branch (rebase on main)
 * push branch
+* examples: GitHub CLI, GitPython, ruby-git gem
 
 github, gitlab, bitbucket
 * create, read, update, merge and close merge requests
 * read and write comments
 * manage issues and milestones
 * track project progress
+* examples: Octokit (Ruby/JS), GitLab API, Bitbucket API, PyGithub
 
 ### Content Management
 CMS (Content Management System)
@@ -145,12 +147,14 @@ CMS (Content Management System)
 * manage content workflows
 * maintain version history
 * manage user permissions
+* examples: Contentful API, Sanity.io, Strapi, Storyblok, ComfortableMexicanSofa (Rails gem)
 
 Knowledge Graph Tools
 * visualize content relationships
 * analyze knowledge gaps
 * suggest related content
 * maintain taxonomy
+* examples: Neo4j, Grakn.ai, RDFlib (Python), ActiveGraph (Ruby)
 
 ### Research & Content Creation
 rss-reader
@@ -158,30 +162,35 @@ rss-reader
 * maintain list of processed, skipped and unprocessed posts
 * set up automated filters and tags
 * track source reliability scores
+* examples: Feedjira (Ruby), feedparser (Python), Feedly API, Inoreader API
 
 http-client
 * fetch web pages, PDFs etc.
 * post content
 * automate API interactions
 * monitor website changes
+* examples: Faraday (Ruby), HTTPX (Python), RestClient, Typhoeus
 
 search
 * use google and other search engines
 * set up custom search alerts
 * analyze search trends
 * track competitor content
+* examples: Google Custom Search API, SerpAPI, Algolia, Elasticsearch (Ruby/Python clients)
 
 AI Writing Assistants
 * generate content drafts
 * check grammar and style
 * suggest content improvements
 * analyze readability scores
+* examples: OpenAI API, Cohere, GPT-3 Ruby/Python SDKs, Grammarly API
 
 Citation Management
 * organize references
 * generate citations
 * check for broken links
 * maintain bibliography
+* examples: Zotero API, Mendeley API, CiteProc (Ruby), pybtex (Python)
 
 ### Multimedia Tools
 youtube
@@ -189,18 +198,21 @@ youtube
 * post videos
 * analyze viewer engagement
 * manage playlists
+* examples: YouTube Data API v3, pytube (Python), youtube_it (Ruby), yt-dlp
 
 Graphic Design Tools
 * create visual content
 * maintain brand guidelines
 * optimize images for web
 * create templates
+* examples: Canva API, Figma API, PIL/Pillow (Python), RMagick (Ruby)
 
 Audio/Video Editing
 * record and edit multimedia
 * add captions and subtitles
 * optimize for different platforms
 * analyze viewer retention
+* examples: FFmpeg, MoviePy (Python), Streamio FFMPEG (Ruby), Vimeo API
 
 ### Community & Analytics
 social media (various)
@@ -208,18 +220,21 @@ social media (various)
 * schedule content
 * monitor engagement
 * respond to comments
+* examples: Twitter API, Facebook Graph API, Instagram Graph API, koala (Ruby FB gem)
 
 analytics
 * gain user knowledge
 * track content performance
 * analyze user behavior
 * generate reports
+* examples: Google Analytics API, Mixpanel, Matomo, Staccato (Ruby GA gem)
 
 Community Platforms
 * manage user forums
 * track user activity
 * moderate discussions
 * organize community events
+* examples: Discourse API, Vanilla Forums API, Thredded (Rails gem), Flarum
 
 ### Learning & Tutoring
 Learning Management System (LMS)
@@ -227,18 +242,21 @@ Learning Management System (LMS)
 * track learner progress
 * manage assessments
 * generate certificates
+* examples: Moodle API, Canvas API, Open edX, Gibbon (Ruby Canvas gem)
 
 Quiz/Assessment Tools
 * create interactive content
 * analyze results
 * provide feedback
 * track learning outcomes
+* examples: Typeform API, Google Forms API, Quizzy (Rails gem), QuizAPI
 
 Spaced Repetition Tools
 * schedule reviews
 * track retention rates
 * optimize learning paths
 * analyze knowledge gaps
+* examples: Anki, SuperMemo, Leitner (Ruby gem), py-spy (Python)
 
 ### Development & Infrastructure
 API Testing Tools
@@ -246,18 +264,21 @@ API Testing Tools
 * monitor performance
 * debug integrations
 * document APIs
+* examples: Postman, Insomnia, Hoppscotch, RSpec API (Ruby), PyTest (Python)
 
 Monitoring Tools
 * track system health
 * receive alerts
 * analyze performance
 * optimize resources
+* examples: New Relic, Datadog, Prometheus, Scout (Ruby gem), psutil (Python)
 
 Accessibility Checkers
 * test for WCAG compliance
 * suggest improvements
 * monitor accessibility
 * generate reports
+* examples: axe-core, Pa11y, WAVE API, Accessibility (Ruby gem), py-w3c (Python)
 
 ### Translation & Localization
 Translation Memory Tools
@@ -265,12 +286,14 @@ Translation Memory Tools
 * maintain glossaries
 * track translation progress
 * ensure consistency
+* examples: Trados Studio, MemoQ, OmegaT, i18n-tasks (Ruby), Babel (Python)
 
 Localization Platforms
 * manage multilingual content
 * track cultural adaptations
 * coordinate with translators
 * maintain style guides
+* examples: Crowdin, Lokalise, Phrase, FastGettext (Ruby), Babel (Python)
 
 ### Quality Assurance
 Fact-Checking Tools
@@ -278,16 +301,19 @@ Fact-Checking Tools
 * check sources
 * track corrections
 * maintain accuracy logs
+* examples: FactCheck API, ClaimBuster, Full Fact, fact_check (Ruby gem), factcheck (Python)
 
 Style Guide Tools
 * enforce writing standards
 * check consistency
 * maintain templates
 * track guideline updates
+* examples: Vale, Proselint, WriteGood (Ruby gem), language-check (Python)
 
 Plagiarism Checkers
 * verify originality
 * track sources
 * maintain content integrity
 * generate reports
+* examples: Copyleaks API, PlagiarismCheck, Turnitin API, originality (Ruby gem), pyplag (Python)
 
