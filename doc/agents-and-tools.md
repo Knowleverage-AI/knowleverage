@@ -23,15 +23,12 @@ Researcher
 Content Curator
 
 * design and maintain the information architecture
-* organize and structure incoming information
-* maintain version history of content
-* archive deprecated content
-* ensure content traceability and attribution
-* manage content lifecycle
-* define content hierarchy and relationships
-* decide on section organization and structure
-* merge or split content sections as needed
-* maintain content taxonomy and metadata
+* organize and structure incoming and existing information
+* maintain version history and lifecycle of content
+* archive deprecated content with traceability
+* define and maintain content hierarchy, relationships, and taxonomy
+* optimize section organization and structure
+* ensure consistent metadata standards
 
 Writer
 
