@@ -126,7 +126,9 @@ Translator
 ## Tools
 
 ### Version Control & Collaboration
+
 git
+
 * clone knowledge base
 * create branch for edits
 * commit changes
@@ -135,6 +137,7 @@ git
 * examples: GitHub CLI, GitPython, ruby-git gem
 
 github, gitlab, bitbucket
+
 * create, read, update, merge and close merge requests
 * read and write comments
 * manage issues and milestones
@@ -142,7 +145,9 @@ github, gitlab, bitbucket
 * examples: Octokit (Ruby/JS), GitLab API, Bitbucket API, PyGithub
 
 ### Content Management
+
 CMS (Content Management System)
+
 * create and edit content pages
 * manage content workflows
 * maintain version history
@@ -150,6 +155,7 @@ CMS (Content Management System)
 * examples: Contentful API, Sanity.io, Strapi, Storyblok, ComfortableMexicanSofa (Rails gem)
 
 Knowledge Graph Tools
+
 * visualize content relationships
 * analyze knowledge gaps
 * suggest related content
@@ -157,7 +163,9 @@ Knowledge Graph Tools
 * examples: Neo4j, Grakn.ai, RDFlib (Python), ActiveGraph (Ruby)
 
 ### Research & Content Creation
+
 rss-reader
+
 * follow trusted sources
 * maintain list of processed, skipped and unprocessed posts
 * set up automated filters and tags
@@ -165,6 +173,7 @@ rss-reader
 * examples: Feedjira (Ruby), feedparser (Python), Feedly API, Inoreader API
 
 http-client
+
 * fetch web pages, PDFs etc.
 * post content
 * automate API interactions
@@ -172,6 +181,7 @@ http-client
 * examples: Faraday (Ruby), HTTPX (Python), RestClient, Typhoeus
 
 search
+
 * use google and other search engines
 * set up custom search alerts
 * analyze search trends
@@ -193,6 +203,7 @@ Citation Management
 * examples: Zotero API, Mendeley API, CiteProc (Ruby), pybtex (Python)
 
 ### Multimedia Tools
+
 youtube
 * fetch transcriptions
 * post videos
@@ -215,6 +226,7 @@ Audio/Video Editing
 * examples: FFmpeg, MoviePy (Python), Streamio FFMPEG (Ruby), Vimeo API
 
 ### Community & Analytics
+
 social media (various)
 * publish posts
 * schedule content
@@ -237,6 +249,7 @@ Community Platforms
 * examples: Discourse API, Vanilla Forums API, Thredded (Rails gem), Flarum
 
 ### Learning & Tutoring
+
 Learning Management System (LMS)
 * create courses
 * track learner progress
@@ -259,6 +272,7 @@ Spaced Repetition Tools
 * examples: Anki, SuperMemo, Leitner (Ruby gem), py-spy (Python)
 
 ### Development & Infrastructure
+
 API Testing Tools
 * test endpoints
 * monitor performance
@@ -281,6 +295,7 @@ Accessibility Checkers
 * examples: axe-core, Pa11y, WAVE API, Accessibility (Ruby gem), py-w3c (Python)
 
 ### Translation & Localization
+
 Translation Memory Tools
 * store and reuse translations
 * maintain glossaries
@@ -296,6 +311,7 @@ Localization Platforms
 * examples: Crowdin, Lokalise, Phrase, FastGettext (Ruby), Babel (Python)
 
 ### Quality Assurance
+
 Fact-Checking Tools
 * verify claims
 * check sources
