@@ -189,6 +189,7 @@ search
 * examples: Google Custom Search API, SerpAPI, Algolia, Elasticsearch (Ruby/Python clients)
 
 AI Writing Assistants
+
 * generate content drafts
 * check grammar and style
 * suggest content improvements
@@ -196,6 +197,7 @@ AI Writing Assistants
 * examples: OpenAI API, Cohere, GPT-3 Ruby/Python SDKs, Grammarly API
 
 Citation Management
+
 * organize references
 * generate citations
 * check for broken links
@@ -205,6 +207,7 @@ Citation Management
 ### Multimedia Tools
 
 youtube
+
 * fetch transcriptions
 * post videos
 * analyze viewer engagement
@@ -212,6 +215,7 @@ youtube
 * examples: YouTube Data API v3, pytube (Python), youtube_it (Ruby), yt-dlp
 
 Graphic Design Tools
+
 * create visual content
 * maintain brand guidelines
 * optimize images for web
@@ -219,6 +223,7 @@ Graphic Design Tools
 * examples: Canva API, Figma API, PIL/Pillow (Python), RMagick (Ruby)
 
 Audio/Video Editing
+
 * record and edit multimedia
 * add captions and subtitles
 * optimize for different platforms
@@ -228,6 +233,7 @@ Audio/Video Editing
 ### Community & Analytics
 
 social media (various)
+
 * publish posts
 * schedule content
 * monitor engagement
@@ -235,6 +241,7 @@ social media (various)
 * examples: Twitter API, Facebook Graph API, Instagram Graph API, koala (Ruby FB gem)
 
 analytics
+
 * gain user knowledge
 * track content performance
 * analyze user behavior
@@ -242,6 +249,7 @@ analytics
 * examples: Google Analytics API, Mixpanel, Matomo, Staccato (Ruby GA gem)
 
 Community Platforms
+
 * manage user forums
 * track user activity
 * moderate discussions
@@ -251,6 +259,7 @@ Community Platforms
 ### Learning & Tutoring
 
 Learning Management System (LMS)
+
 * create courses
 * track learner progress
 * manage assessments
@@ -258,6 +267,7 @@ Learning Management System (LMS)
 * examples: Moodle API, Canvas API, Open edX, Gibbon (Ruby Canvas gem)
 
 Quiz/Assessment Tools
+
 * create interactive content
 * analyze results
 * provide feedback
@@ -265,6 +275,7 @@ Quiz/Assessment Tools
 * examples: Typeform API, Google Forms API, Quizzy (Rails gem), QuizAPI
 
 Spaced Repetition Tools
+
 * schedule reviews
 * track retention rates
 * optimize learning paths
@@ -274,6 +285,7 @@ Spaced Repetition Tools
 ### Development & Infrastructure
 
 API Testing Tools
+
 * test endpoints
 * monitor performance
 * debug integrations
@@ -281,6 +293,7 @@ API Testing Tools
 * examples: Postman, Insomnia, Hoppscotch, RSpec API (Ruby), PyTest (Python)
 
 Monitoring Tools
+
 * track system health
 * receive alerts
 * analyze performance
@@ -288,6 +301,7 @@ Monitoring Tools
 * examples: New Relic, Datadog, Prometheus, Scout (Ruby gem), psutil (Python)
 
 Accessibility Checkers
+
 * test for WCAG compliance
 * suggest improvements
 * monitor accessibility
@@ -297,6 +311,7 @@ Accessibility Checkers
 ### Translation & Localization
 
 Translation Memory Tools
+
 * store and reuse translations
 * maintain glossaries
 * track translation progress
@@ -304,6 +319,7 @@ Translation Memory Tools
 * examples: Trados Studio, MemoQ, OmegaT, i18n-tasks (Ruby), Babel (Python)
 
 Localization Platforms
+
 * manage multilingual content
 * track cultural adaptations
 * coordinate with translators
@@ -313,6 +329,7 @@ Localization Platforms
 ### Quality Assurance
 
 Fact-Checking Tools
+
 * verify claims
 * check sources
 * track corrections
@@ -320,6 +337,7 @@ Fact-Checking Tools
 * examples: FactCheck API, ClaimBuster, Full Fact, fact_check (Ruby gem), factcheck (Python)
 
 Style Guide Tools
+
 * enforce writing standards
 * check consistency
 * maintain templates
@@ -327,6 +345,7 @@ Style Guide Tools
 * examples: Vale, Proselint, WriteGood (Ruby gem), language-check (Python)
 
 Plagiarism Checkers
+
 * verify originality
 * track sources
 * maintain content integrity
