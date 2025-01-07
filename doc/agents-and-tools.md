@@ -15,20 +15,18 @@ Researcher
 
 * understand and develop learning and documentation goals
 * find relevant sources of information (such as publishers, blogs, youtube channels)
-* follow known sources
+* maintain a database of trusted sources
+* act on new publications and search results
 * decide whether a publication is relevant for the set goals
 * extract information from publication
-* maintain a database of trusted sources
 
 Content Curator
 
-* design and maintain the information architecture
 * organize and structure incoming and existing information
+* define and maintain content hierarchy, relationships, and taxonomy
+* ensure consistent metadata standards
 * maintain version history and lifecycle of content
 * archive deprecated content with traceability
-* define and maintain content hierarchy, relationships, and taxonomy
-* optimize section organization and structure
-* ensure consistent metadata standards
 
 Writer
 
@@ -57,7 +55,7 @@ Speaker
 Lector
 
 * maintain quality standards and style guides
-* review existing knowledge bases and changes
+* review existing knowledge base and edits
 * suggest improvements on methodology, correctness, style, completeness
 * review feedback of other lectors on same contents to enhance own lectoring skills
 * maintain templates and content guidelines
