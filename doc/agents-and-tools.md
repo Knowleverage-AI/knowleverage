@@ -34,7 +34,7 @@ Writer
 * formulate information according to style guidelines
 * adapt content for different reading levels
 * ensure consistency in tone and voice
-* incorporate feedback from lectors and validators
+* incorporate feedback from QA
 * collaborate with visualizers for integrated content
 
 Visualizer
@@ -122,4 +122,48 @@ Translator
 * maintain translation memory and glossaries
 * ensure cultural appropriateness of content
 * coordinate with subject matter experts for accurate translations
+
+## Tools
+
+git
+
+* clone knowledge base
+* create branch for edits
+* commit changes
+* update branch (rebase on main)
+* push branch
+
+github, gitlab, bitbucket
+
+* create, read, update, merge and close merge requests
+* read and write comments
+
+rss-reader
+
+* follow trusted sources
+* maintain list of processed, skipped and unprocessed posts
+
+http-client
+
+* fetch web pages, PDFs etc.
+* post content
+
+search
+
+* use google and other search engines
+
+youtube
+
+* fetch transcriptions
+* post videos
+
+social media (various)
+
+* publish posts
+
+analytics
+
+* gain user knowledge
+
+...
 
