@@ -52,13 +52,16 @@ Speaker
 * develop presentation materials
 * maintain tone and style guidelines for spoken content
 
-Lector
+Quality Assurance Specialist
 
-* maintain quality standards and style guides
-* review existing knowledge base and edits
-* suggest improvements on methodology, correctness, style, completeness
-* review feedback of other lectors on same contents to enhance own lectoring skills
-* maintain templates and content guidelines
+* maintain comprehensive quality standards including style, accuracy, and completeness
+* verify factual accuracy and scientific validity of content
+* cross-check references, citations, and sources
+* review existing knowledge base and edits for methodology, correctness, and style
+* ensure content is up-to-date and meets current standards
+* maintain templates, content guidelines, and accuracy standards
+* suggest improvements for content quality and consistency
+* review feedback from other QA specialists to enhance review skills
 
 Tutor
 
@@ -119,11 +122,4 @@ Translator
 * maintain translation memory and glossaries
 * ensure cultural appropriateness of content
 * coordinate with subject matter experts for accurate translations
-
-Validator
-
-* verify factual accuracy of content
-* ensure scientific validity and up-to-date information
-* cross-check references and citations
-* maintain accuracy standards and guidelines
 
