@@ -45,6 +45,15 @@ gem "thruster", "~> 0.1", require: false
 gem "faraday", "~> 2.12"
 gem "faraday-http-cache", "~> 2.5"
 
+# Nokogiri
+gem "nokogiri", "~> 1.18"
+
+# Langchainrb
+gem "langchainrb", "~> 0.19"
+
+# LLMs
+gem "anthropic", "~> 0.3"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[mri windows], require: "debug/prelude"
