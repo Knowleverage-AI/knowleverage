@@ -99,6 +99,10 @@ GEM
       irb (~> 1.10)
       reline (>= 0.3.8)
     diff-lcs (1.5.1)
+    dotenv (3.1.6)
+    dotenv-rails (3.1.6)
+      dotenv (= 3.1.6)
+      railties (>= 6.1)
     drb (2.2.1)
     e2mmap (0.1.0)
     erubi (1.13.1)
@@ -428,6 +432,7 @@ DEPENDENCIES
   bootsnap (~> 1.18)
   brakeman
   debug
+  dotenv-rails
   faraday (~> 2.12)
   faraday-http-cache (~> 2.5)
   importmap-rails

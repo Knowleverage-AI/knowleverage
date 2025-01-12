@@ -86,6 +86,7 @@ group :development, :test do
   gem "ruby-lsp", require: false
   gem "solargraph", require: false
   gem "solargraph-rails", require: false
+  gem "dotenv-rails"
 end
 
 group :development do

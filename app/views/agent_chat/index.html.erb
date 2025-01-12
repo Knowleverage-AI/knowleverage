@@ -1,0 +1,28 @@
+<div class="agent-chat" data-controller="chat">
+  <h1>Agent Chat Interface</h1>
+  
+  <div class="connection-status">
+    <span>Status:</span>
+    <span data-chat-target="status">Disconnected</span>
+  </div>
+
+  <div class="chat-interface">
+    <div class="message-log" data-chat-target="messageLog">
+      <!-- Messages will appear here -->
+    </div>
+    
+    <form data-action="submit->chat#send">
+      <div class="message-input">
+        <textarea 
+          data-chat-target="input"
+          data-action="keypress->chat#keyPress"
+          placeholder="Type your message..."
+        ></textarea>
+        <button 
+          type="submit" 
+          data-chat-target="sendButton"
+        >Send</button>
+      </div>
+    </form>
+  </div>
+</div>

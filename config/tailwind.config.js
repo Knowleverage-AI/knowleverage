@@ -12,6 +12,21 @@ module.exports = {
       fontFamily: {
         sans: ['Inter var', ...defaultTheme.fontFamily.sans],
       },
+      colors: {
+        'chat-primary': '#2563eb',
+        'chat-secondary': '#1e40af',
+        'chat-success': '#16a34a',
+        'chat-error': '#dc2626',
+      },
+      spacing: {
+        'chat-input': '3.75rem',
+        'chat-log': '24rem',
+      },
+      screens: {
+        'chat-sm': '480px',
+        'chat-md': '768px',
+        'chat-lg': '1024px',
+      }
     },
   },
   plugins: [
