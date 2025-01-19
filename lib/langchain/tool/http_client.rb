@@ -16,7 +16,6 @@ module Langchain
         depends_on "nokogiri"
       end
 
-
       def get(url:)
         response = Faraday.get(url)
         raise "Failed to fetch page: #{response.status}" unless response.success?

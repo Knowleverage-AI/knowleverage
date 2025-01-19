@@ -14,16 +14,13 @@ class IngestCollectionPageJob < ApplicationJob
     page_content = assistant.tools["HttpClient"].get(url: url)
     prompt = ARTICLE_EXTRACTION_PROMPT.format(html_content: page_content.to_html)
     response = assistant.chat(messages: [{ role: "user", content: prompt }])
-    binding.pry
 
     # Step 3: Parse the response and enqueue jobs for individual articles
     articles = JSON.parse(response.chat_completion)
-    binding.pry
     articles.each do |article|
-      binding.pry
       # IngestSingleArticleJob.perform_later(url: article["url"], description: article["description"])
     end
-  rescue => e
+  rescue StandardError => e
     Rails.logger.error "Error processing collection page: #{e.message}"
     raise e if Rails.env.development? # Re-raise in development for debugging
   end
