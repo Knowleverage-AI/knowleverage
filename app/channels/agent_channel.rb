@@ -97,6 +97,7 @@ class AgentChannel < ApplicationCable::Channel
       Rails.logger.info "Received chunk: #{chunk.inspect}"
       
       # Extract text content from the chunk based on its structure
+      binding.pry  # chunk
       chunk_text = if chunk.is_a?(Hash)
         case chunk["type"]
         when "text_delta"
@@ -112,6 +113,7 @@ class AgentChannel < ApplicationCable::Channel
       end
 
       unless chunk_text.empty?
+          binding.pry
         buffer += chunk_text
         transmit_chunk(chunk_text)
       end
