@@ -47,6 +47,7 @@ class AgentChannel < ApplicationCable::Channel
   end
 
   def handle_error(error)
+    binding.pry
     Rails.logger.error("Error processing message: #{error.message}")
     Rails.logger.error("Error class: #{error.class}")
     Rails.logger.error("Full error details:")
@@ -80,7 +81,7 @@ class AgentChannel < ApplicationCable::Channel
 
   def transmit_start_message
     transmit({
-      response: "",
+      response: {},
       message_type: "assistant-start",
       timestamp: Time.current
     })
@@ -101,6 +102,7 @@ class AgentChannel < ApplicationCable::Channel
   end
 
   def transmit_chunk(chunk)
+    binding.pry
     transmit({
       response: chunk,
       message_type: "assistant-chunk",
@@ -109,6 +111,7 @@ class AgentChannel < ApplicationCable::Channel
   end
 
   def transmit_completion_message(buffer)
+    binding.pry
     transmit({
       response: buffer,
       message_type: "assistant-complete",
