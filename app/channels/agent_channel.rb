@@ -95,10 +95,21 @@ class AgentChannel < ApplicationCable::Channel
       stream: true
     ) do |chunk|
       Rails.logger.info "Received chunk: #{chunk.inspect}"
-      # The chunk is a hash with the completion text
-      chunk_text = chunk["delta"] || chunk["content"] || ""
-      buffer += chunk_text
-      transmit_chunk(chunk_text)
+      
+      # Extract text content from the chunk based on its structure
+      chunk_text = if chunk.is_a?(Hash)
+        chunk.dig("message", "content", 0, "text") || # New format
+        chunk["delta"] || # Alternative format
+        chunk["content"] || # Alternative format
+        ""
+      else
+        chunk.to_s
+      end
+
+      unless chunk_text.empty?
+        buffer += chunk_text
+        transmit_chunk(chunk_text)
+      end
     end
     buffer
   rescue => e
