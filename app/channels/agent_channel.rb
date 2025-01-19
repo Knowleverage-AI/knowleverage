@@ -9,7 +9,7 @@ class AgentChannel < ApplicationCable::Channel
   def subscribed
     # Stream from a unique channel for this connection
     stream_from "agent_channel_#{connection_identifier}"
-    
+
     # Send welcome message
     transmit({
       response: "Hello! I'm your AI assistant. How can I help you today?",
@@ -20,7 +20,7 @@ class AgentChannel < ApplicationCable::Channel
 
   def receive(data)
     Rails.logger.info "AgentChannel received message: #{data.inspect}"
-    return unless data["message"].present?
+    return if data["message"].blank?
 
     # Acknowledge receipt
     transmit({
@@ -51,15 +51,15 @@ class AgentChannel < ApplicationCable::Channel
   private
 
   def process_message(data)
-    require 'langchain'
-    
-    api_key = ENV.fetch('ANTHROPIC_API_KEY')
+    require "langchain"
+
+    api_key = ENV.fetch("ANTHROPIC_API_KEY")
     Rails.logger.info "Using API key: #{api_key[0..3]}..."
-    
+
     llm = Langchain::LLM::Anthropic.new(
       api_key: api_key
     )
-    
+
     # Start a new message
     transmit({
       response: "",
@@ -68,7 +68,7 @@ class AgentChannel < ApplicationCable::Channel
     })
 
     buffer = ""
-    
+
     llm.complete(
       prompt: data["message"],
       max_tokens: 1000,
@@ -91,5 +91,4 @@ class AgentChannel < ApplicationCable::Channel
       timestamp: Time.current
     })
   end
-
 end
