@@ -7,10 +7,23 @@ class AgentChannel < ApplicationCable::Channel
   delegate :connection_identifier, to: :connection
 
   def subscribed
-    # Stream from a unique channel for this connection
     stream_from "agent_channel_#{connection_identifier}"
-    
-    # Send welcome message
+    send_welcome_message
+  end
+
+  def receive(data)
+    Rails.logger.info "AgentChannel received message: #{data.inspect}"
+    return if data["message"].blank?
+
+    send_processing_status
+    process_and_transmit_response(data)
+  rescue StandardError => e
+    handle_error(e)
+  end
+
+  private
+
+  def send_welcome_message
     transmit({
       response: "Hello! I'm your AI assistant. How can I help you today?",
       message_type: "system",
@@ -18,78 +31,88 @@ class AgentChannel < ApplicationCable::Channel
     })
   end
 
-  def receive(data)
-    Rails.logger.info "AgentChannel received message: #{data.inspect}"
-    return unless data["message"].present?
-
-    # Acknowledge receipt
+  def send_processing_status
     transmit({
       message_type: "status",
       status: "processing",
       timestamp: Time.current
     })
-
-    # Process and respond only to this client
-    begin
-      Rails.logger.info "Processing message..."
-      processed = process_message(data)
-      Rails.logger.info "Processed response: #{processed.inspect}"
-      transmit(processed)
-    rescue StandardError => e
-      Rails.logger.error("Error processing message: #{e.message}")
-      Rails.logger.error("Error class: #{e.class}")
-      Rails.logger.error("Full error details:")
-      Rails.logger.error(e.full_message)
-      transmit({
-        response: "I apologize, but I encountered an error processing your request. Error: #{e.message}",
-        message_type: "error",
-        timestamp: Time.current
-      })
-    end
   end
 
-  private
+  def process_and_transmit_response(data)
+    Rails.logger.info "Processing message..."
+    processed = process_message(data)
+    Rails.logger.info "Processed response: #{processed.inspect}"
+    transmit(processed)
+  end
+
+  def handle_error(error)
+    Rails.logger.error("Error processing message: #{error.message}")
+    Rails.logger.error("Error class: #{error.class}")
+    Rails.logger.error("Full error details:")
+    Rails.logger.error(error.full_message)
+
+    transmit({
+      response: "I apologize, but I encountered an error processing your request. Error: #{error.message}",
+      message_type: "error",
+      timestamp: Time.current
+    })
+  end
 
   def process_message(data)
-    require 'langchain'
-    
-    api_key = ENV.fetch('ANTHROPIC_API_KEY')
+    require "langchain"
+
+    api_key = ENV.fetch("ANTHROPIC_API_KEY")
     Rails.logger.info "Using API key: #{api_key[0..3]}..."
-    
+
     llm = Langchain::LLM::Anthropic.new(
       api_key: api_key
     )
-    
-    # Start a new message
+
+    handle_streaming_response(llm, data)
+  end
+
+  def handle_streaming_response(llm, data)
+    transmit_start_message
+    buffer = stream_response(llm, data)
+    transmit_completion_message(buffer)
+  end
+
+  def transmit_start_message
     transmit({
       response: "",
       message_type: "assistant-start",
       timestamp: Time.current
     })
+  end
 
+  def stream_response(llm, data)
     buffer = ""
-    
     llm.complete(
       prompt: data["message"],
       max_tokens: 1000,
       temperature: 0.7,
-      stream: true # Enable streaming
+      stream: true
     ) do |chunk|
       buffer += chunk
-      # Send each chunk as it arrives
-      transmit({
-        response: chunk,
-        message_type: "assistant-chunk",
-        timestamp: Time.current
-      })
+      transmit_chunk(chunk)
     end
+    buffer
+  end
 
-    # Send completion message
+  def transmit_chunk(chunk)
+    transmit({
+      response: chunk,
+      message_type: "assistant-chunk",
+      timestamp: Time.current
+    })
+  end
+
+  def transmit_completion_message(buffer)
     transmit({
       response: buffer,
       message_type: "assistant-complete",
       timestamp: Time.current
     })
   end
-
 end
