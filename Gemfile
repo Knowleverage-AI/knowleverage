@@ -27,8 +27,7 @@ gem "jbuilder", "~> 2.13"
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[windows jruby]
 
-# Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
-gem "solid_cable", "~> 3.0"
+# Use the database-backed adapters for Rails.cache and Active Job
 gem "solid_cache", "~> 1.0"
 gem "solid_queue", "~> 1.1"
 
@@ -40,6 +39,14 @@ gem "thruster", "~> 0.1", require: false
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
+
+# environemnt
+gem "dotenv-rails", "~> 3.1"
+
+# Redis
+group :production do
+  gem "redis", "~> 5.3"
+end
 
 # Faraday
 gem "faraday", "~> 2.12"
@@ -86,7 +93,6 @@ group :development, :test do
   gem "ruby-lsp", require: false
   gem "solargraph", require: false
   gem "solargraph-rails", require: false
-  gem "dotenv-rails"
 end
 
 group :development do
