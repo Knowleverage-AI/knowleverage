@@ -107,6 +107,7 @@ class AgentChannel < ApplicationCable::Channel
       end
 
       unless chunk_text.empty?
+          binding.pry
         buffer += chunk_text
         transmit_chunk(chunk_text)
       end
