@@ -97,23 +97,20 @@ class AgentChannel < ApplicationCable::Channel
       Rails.logger.info "Received chunk: #{chunk.inspect}"
       
       # Extract text content from the chunk based on its structure
-      binding.pry  # chunk
       chunk_text = if chunk.is_a?(Hash)
         case chunk["type"]
-        when "text_delta"
-          chunk["text"]
+        when "content_block_delta"
+          # Handle the nested text_delta structure
+          delta = chunk["delta"]
+          delta["type"] == "text_delta" ? delta["text"] : ""
         else
-          chunk.dig("message", "content", 0, "text") || # New format
-          chunk["delta"] || # Alternative format
-          chunk["content"] || # Alternative format
-          ""
+          "" # Ignore other chunk types
         end
       else
         chunk.to_s
       end
 
       unless chunk_text.empty?
-          binding.pry
         buffer += chunk_text
         transmit_chunk(chunk_text)
       end
