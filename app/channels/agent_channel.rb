@@ -47,7 +47,6 @@ class AgentChannel < ApplicationCable::Channel
   end
 
   def handle_error(error)
-    binding.pry
     Rails.logger.error("Error processing message: #{error.message}")
     Rails.logger.error("Error class: #{error.class}")
     Rails.logger.error("Full error details:")
@@ -89,20 +88,24 @@ class AgentChannel < ApplicationCable::Channel
 
   def stream_response(llm, data)
     buffer = ""
-    llm.complete(
-      prompt: data["message"],
-      max_tokens: 1000,
-      temperature: 0.7,
+    Rails.logger.info "Sending message to Anthropic: #{data["message"]}"
+
+    llm.chat(
+      messages: [{ role: "user", content: data["message"] }],
       stream: true
     ) do |chunk|
-      buffer += chunk
-      transmit_chunk(chunk)
+      Rails.logger.info "Received chunk: #{chunk.inspect}"
+      buffer += chunk.chat_completion
+      transmit_chunk(chunk.chat_completion)
     end
     buffer
+  rescue StandardError => e
+    Rails.logger.error "Error in stream_response: #{e.class} - #{e.message}"
+    Rails.logger.error e.backtrace.join("\n")
+    raise
   end
 
   def transmit_chunk(chunk)
-    binding.pry
     transmit({
       response: chunk,
       message_type: "assistant-chunk",
@@ -111,7 +114,6 @@ class AgentChannel < ApplicationCable::Channel
   end
 
   def transmit_completion_message(buffer)
-    binding.pry
     transmit({
       response: buffer,
       message_type: "assistant-complete",
