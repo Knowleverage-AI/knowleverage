@@ -79,25 +79,13 @@ class AgentChannel < ApplicationCable::Channel
       }
     )
 
-    # Create an Assistant with streaming LLM
+    # Create an Assistant with streaming LLM, but don't handle chunks in the initialization block
     assistant = Langchain::Assistant.new(
       llm: llm,
       instructions: "You are a helpful AI assistant. Respond concisely and accurately to user queries."
     ) do |response_chunk|
+      # Just log the chunks here, don't transmit them
       Rails.logger.debug "Response chunk in initialization block: #{response_chunk.inspect}"
-      
-      # Handle streaming chunks directly in the block
-      if response_chunk["type"] == "content_block_delta" && 
-         response_chunk.dig("delta", "type") == "text_delta"
-        chunk_text = response_chunk.dig("delta", "text").to_s
-        unless chunk_text.empty?
-          transmit({
-            response: chunk_text,
-            message_type: "assistant-chunk",
-            timestamp: Time.current
-          })
-        end
-      end
     end
 
     handle_streaming_response(assistant, data)
