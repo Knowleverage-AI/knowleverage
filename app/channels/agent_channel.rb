@@ -73,7 +73,8 @@ class AgentChannel < ApplicationCable::Channel
         default_options: {
           temperature: 0.7,
           max_tokens: 4096,
-          model: "claude-3-sonnet-20240229"  # Explicitly specify the model
+          model: "claude-3-sonnet-20240229",  # Explicitly specify the model
+          stream: true  # Enable streaming at the LLM level
         }
       ),
       instructions: "You are a helpful AI assistant. Respond concisely and accurately to user queries."
