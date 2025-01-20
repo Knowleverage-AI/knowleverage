@@ -232,23 +232,22 @@
     width: 100%;
   }
 }
-.message.assistant.streaming {
-  border-right: 2px solid black;
+.message.assistant.streaming::after {
+  content: '';
+  display: inline-block;
+  width: 0.5em;  /* Width of cursor, adjust as needed */
+  height: 1.2em; /* Height of cursor, matching line height */
+  background: black;
+  vertical-align: text-bottom;
+  margin-left: 2px;
   animation: cursor-blink 1s step-end infinite;
 }
 
 @keyframes cursor-blink {
-  0% {
-    border-right-color: transparent;
-  }
-  100% {
-    border-right-color: transparent;
+  0%, 100% {
+    opacity: 0;
   }
   50% {
-    border-right-color: black;
+    opacity: 1;
   }
-}
-
-.message.assistant {
-  border-right: 2px solid transparent;
 }
