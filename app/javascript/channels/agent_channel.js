@@ -1,37 +1,67 @@
 import consumer from "channels/consumer"
 
 const updateConnectionStatus = (status) => {
-   const statusElement = document.getElementById('connection-status')
-   if (statusElement) {
-     statusElement.textContent = status
-   }
- }
+  const statusElement = document.getElementById('connection-status')
+  if (statusElement) {
+    statusElement.textContent = status
+  }
+}
 
 consumer.subscriptions.create("AgentChannel", {
   connected() {
-    // Called when the subscription is ready for use on the server
     console.log("AgentChannel connected")
     updateConnectionStatus("Connected")
   },
 
   disconnected() {
-    // Called when the subscription has been terminated by the server
     console.warn("AgentChannel disconnected")
     updateConnectionStatus("Disconnected")
   },
 
   received(data) {
-    // Called when there's incoming data on the websocket for this channel
     console.log("Received message:", data)
     this.handleMessage(data)
   },
 
-
   handleMessage(data) {
-    // Process incoming messages
-    if (data.response) {
-      // Add your UI update logic here
-      console.log("Agent response:", data.response)
+    console.log("Received message:", data)
+    const messageLog = document.querySelector('[data-chat-target="messageLog"]')
+    if (!messageLog) return
+
+    switch(data.message_type) {
+      case 'assistant-start':
+        // Create a new message container for the streaming response
+        const streamContainer = document.createElement('div')
+        streamContainer.classList.add('message', 'assistant')
+        streamContainer.dataset.streamContainer = 'true'
+        messageLog.appendChild(streamContainer)
+        break
+        
+      case 'assistant-chunk':
+        // Append chunk to the current stream container
+        const currentContainer = messageLog.querySelector('[data-stream-container="true"]')
+        if (currentContainer) {
+          currentContainer.textContent += data.response
+        }
+        break
+        
+      case 'assistant-complete':
+        // Finalize the streaming container and remove the streaming flag
+        const streamingContainer = messageLog.querySelector('[data-stream-container="true"]')
+        if (streamingContainer) {
+          streamingContainer.textContent = data.response // Set complete response
+          streamingContainer.removeAttribute('data-stream-container')
+        }
+        messageLog.scrollTop = messageLog.scrollHeight // Scroll to bottom
+        break
+
+      case 'error':
+        const errorDiv = document.createElement('div')
+        errorDiv.classList.add('message', 'error')
+        errorDiv.textContent = data.response
+        messageLog.appendChild(errorDiv)
+        messageLog.scrollTop = messageLog.scrollHeight
+        break
     }
   }
 })

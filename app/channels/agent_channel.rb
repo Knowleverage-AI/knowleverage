@@ -86,6 +86,28 @@ class AgentChannel < ApplicationCable::Channel
     })
   end
 
+  # Example chunks from Anthropic API:
+  #
+  # Initial message start:
+  # {"type"=>"message_start",
+  #  "message"=>
+  #   {"id"=>"msg_01Le2vtbcmyqjGWuw7ghR4J7",
+  #    "type"=>"message",
+  #    "role"=>"assistant", 
+  #    "model"=>"claude-3-5-sonnet-20240620",
+  #    "content"=>[],
+  #    "stop_reason"=>nil,
+  #    "stop_sequence"=>nil,
+  #    "usage"=>{"input_tokens"=>9, "cache_creation_input_tokens"=>0, "cache_read_input_tokens"=>0, "output_tokens"=>1}}}
+  #
+  # Content block start:
+  # {"type"=>"content_block_start", "index"=>0, "content_block"=>{"type"=>"text", "text"=>""}}
+  #
+  # Ping:
+  # {"type"=>"ping"}
+  #
+  # Content block delta with text:
+  # {"type"=>"content_block_delta", "index"=>0, "delta"=>{"type"=>"text_delta", "text"=>"Hi"}}
   def stream_response(llm, data)
     buffer = ""
     Rails.logger.info "Sending message to Anthropic: #{data["message"]}"
@@ -115,6 +137,9 @@ class AgentChannel < ApplicationCable::Channel
         transmit_chunk(chunk_text)
       end
     end
+    
+    # Log the complete buffer for debugging
+    Rails.logger.info "Complete response buffer: #{buffer}"
     buffer
   rescue => e
     Rails.logger.error "Error in stream_response: #{e.class} - #{e.message}"
