@@ -46,13 +46,21 @@ consumer.subscriptions.create("AgentChannel", {
         break
         
       case 'assistant-complete':
-        // Finalize the streaming container and remove the streaming flag
+        // Remove any existing streaming container
         const streamingContainer = messageLog.querySelector('[data-stream-container="true"]')
         if (streamingContainer) {
-          streamingContainer.textContent = data.response // Set complete response
           streamingContainer.removeAttribute('data-stream-container')
         }
-        messageLog.scrollTop = messageLog.scrollHeight // Scroll to bottom
+        
+        // Check if response includes truncation notice
+        if (data.response.includes("[Note: Response was truncated")) {
+          const truncationDiv = document.createElement('div')
+          truncationDiv.classList.add('message', 'system', 'truncation-notice')
+          truncationDiv.textContent = "Note: The response was truncated due to length limits"
+          messageLog.appendChild(truncationDiv)
+        }
+        
+        messageLog.scrollTop = messageLog.scrollHeight
         break
 
       case 'error':

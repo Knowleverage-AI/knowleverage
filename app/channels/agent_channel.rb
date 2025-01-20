@@ -111,11 +111,14 @@ class AgentChannel < ApplicationCable::Channel
   # {"type"=>"content_block_delta", "index"=>0, "delta"=>{"type"=>"text_delta", "text"=>"Hi"}}
   def stream_response(llm, data)
     buffer = ""
+    hit_token_limit = false
     Rails.logger.info "Starting stream_response..."
     
     begin
       llm.chat(
         messages: [{role: "user", content: data["message"]}],
+        # Increase max tokens to handle longer lists
+        max_tokens: 1024,
         stream: true
       ) do |chunk|
         Rails.logger.debug "Raw chunk received: #{chunk.inspect}"
@@ -133,7 +136,12 @@ class AgentChannel < ApplicationCable::Channel
             end
           when "message_delta"
             if chunk["delta"]["stop_reason"] == "max_tokens"
+              hit_token_limit = true
               Rails.logger.warn "Response hit max_tokens limit! Buffer length: #{buffer.length}"
+              # Add a note about truncation
+              truncation_note = "\n\n[Note: Response was truncated due to length limits]"
+              buffer += truncation_note
+              transmit_chunk(truncation_note)
             end
           when "message_stop"
             Rails.logger.info "Stream completed. Final buffer length: #{buffer.length}"
@@ -142,7 +150,9 @@ class AgentChannel < ApplicationCable::Channel
       end
       
       Rails.logger.info "Stream processing completed"
-      Rails.logger.debug "Final buffer content: #{buffer}"
+      if hit_token_limit
+        Rails.logger.warn "Response was truncated due to token limit"
+      end
       
       buffer
     rescue => e
@@ -163,14 +173,15 @@ class AgentChannel < ApplicationCable::Channel
   def transmit_final_message(buffer)
     Rails.logger.info "Transmitting final message with buffer length: #{buffer.length}"
     
-    # Don't transmit raw boolean response
     response_data = {
       response: buffer,
       message_type: "assistant-complete",
       timestamp: Time.current
     }
     
-    Rails.logger.debug "Final message data: #{response_data.inspect}"
+    # Log the first and last part of the buffer instead of the whole thing
+    preview_length = 100
+    Rails.logger.debug "Final message preview: #{buffer[0..preview_length]}... (#{buffer.length} chars total)"
     transmit(response_data)
   end
 end
