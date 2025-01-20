@@ -117,8 +117,8 @@ class AgentChannel < ApplicationCable::Channel
     begin
       llm.chat(
         messages: [{role: "user", content: data["message"]}],
-        # Increase max tokens to handle longer lists
-        max_tokens: 1024,
+        # Increased max tokens 10x from 1024 to 10240
+        max_tokens: 10240,
         stream: true
       ) do |chunk|
         Rails.logger.debug "Raw chunk received: #{chunk.inspect}"
