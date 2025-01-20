@@ -39,6 +39,7 @@ export default class extends Controller {
       case "assistant-chunk":
         // Append the chunk to the current message
         if (this.currentStreamDiv) {
+          console.log("Received chunk:", data.response)
           this.currentStreamDiv.textContent += data.response
           this.scrollToBottom()
         }

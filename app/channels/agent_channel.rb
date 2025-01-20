@@ -128,26 +128,20 @@ class AgentChannel < ApplicationCable::Channel
     begin
       Rails.logger.debug "Sending message to assistant: #{data["message"]}"
       
-      # Create a block that will handle the streaming response
       response = assistant.add_message_and_run!(content: data["message"]) do |chunk|
         Rails.logger.debug "Raw chunk received in stream_response: #{chunk.inspect}"
         
-        case chunk["type"]
-        when "content_block_delta"
-          if chunk.dig("delta", "type") == "text_delta"
-            chunk_text = chunk.dig("delta", "text").to_s
-            unless chunk_text.empty?
-              Rails.logger.debug "Adding chunk text: #{chunk_text}"
-              buffer += chunk_text
-              transmit_chunk(chunk_text)
-            end
-          end
-        when "message_delta"
-          if chunk.dig("delta", "stop_reason") == "max_tokens"
-            hit_token_limit = true
-            truncation_note = "\n\n[Note: Response was truncated due to length limits]"
-            buffer += truncation_note
-            transmit_chunk(truncation_note)
+        if chunk["type"] == "content_block_delta" && chunk.dig("delta", "type") == "text_delta"
+          chunk_text = chunk.dig("delta", "text").to_s
+          unless chunk_text.empty?
+            Rails.logger.debug "Adding chunk text: #{chunk_text}"
+            buffer += chunk_text
+            # Transmit each chunk immediately
+            transmit({
+              response: chunk_text,
+              message_type: "assistant-chunk",
+              timestamp: Time.current
+            })
           end
         end
       end
