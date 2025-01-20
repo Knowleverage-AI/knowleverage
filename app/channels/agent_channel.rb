@@ -156,13 +156,12 @@ class AgentChannel < ApplicationCable::Channel
       buffer
     rescue Faraday::Error => e
       begin
-        binding.pry
-        error_json = JSON.parse(e.response[:body])
-        error_message = error_json.dig("error", "message") || error_json["error"] || e.message
-        error_type = error_json.dig("error", "type") || error_json["type"] || "unknown"
+        error_response = e.response[:body]  # Already a Hash
+        error_message = error_response.dig("error", "message")
+        error_type = error_response.dig("error", "type")
         
         Rails.logger.error "API Error: #{error_type} - #{error_message}"
-        Rails.logger.error "Full response body: #{e.response[:body]}"
+        Rails.logger.error "Full response body: #{error_response}"
         
         # Transmit a user-friendly error message
         transmit({
@@ -170,8 +169,9 @@ class AgentChannel < ApplicationCable::Channel
           message_type: "error",
           timestamp: Time.current
         })
-      rescue JSON::ParseError
-        Rails.logger.error "Failed to parse error response: #{e.response[:body]}"
+      rescue => parse_error
+        Rails.logger.error "Failed to process error response: #{parse_error.message}"
+        Rails.logger.error "Original error body: #{e.response[:body]}"
         raise e
       end
     rescue => e
