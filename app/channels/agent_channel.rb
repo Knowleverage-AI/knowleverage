@@ -66,11 +66,14 @@ class AgentChannel < ApplicationCable::Channel
     api_key = ENV.fetch("ANTHROPIC_API_KEY")
     Rails.logger.info "Using API key: #{api_key[0..3]}..."
 
-    # Create an Assistant instead of direct LLM
+    # Create an Assistant with properly configured LLM
     assistant = Langchain::Assistant.new(
       llm: Langchain::LLM::Anthropic.new(
         api_key: api_key,
-        streaming: true
+        default_options: {
+          temperature: 0.7,  # Add some creativity while keeping responses focused
+          max_tokens: 4096   # Set a reasonable token limit
+        }
       ),
       system_prompt: "You are a helpful AI assistant. Respond concisely and accurately to user queries."
     )
