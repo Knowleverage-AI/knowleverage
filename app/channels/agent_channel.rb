@@ -69,156 +69,48 @@ class AgentChannel < ApplicationCable::Channel
     llm = Langchain::LLM::Anthropic.new(
       api_key: api_key,
       llm_options: {
-        stream: true  # Enable streaming at the client level
+        stream: true
       },
       default_options: {
         temperature: 0.7,
         max_tokens: 4096,
         model: "claude-3-sonnet-20240229",
-        stream: true  # Enable streaming at the request level
+        stream: true
       }
     )
 
-    # Create an Assistant with streaming LLM, but don't handle chunks in the initialization block
     assistant = Langchain::Assistant.new(
       llm: llm,
       instructions: "You are a helpful AI assistant. Respond concisely and accurately to user queries."
     ) do |response_chunk|
-      # Just log the chunks here, don't transmit them
-      Rails.logger.debug "Response chunk in initialization block: #{response_chunk.inspect}"
+      if response_chunk["type"] == "content_block_delta" && 
+         response_chunk.dig("delta", "type") == "text_delta"
+        chunk_text = response_chunk.dig("delta", "text").to_s
+        unless chunk_text.empty?
+          transmit({
+            response: chunk_text,
+            message_type: "assistant-chunk",
+            timestamp: Time.current
+          })
+        end
+      end
     end
 
-    handle_streaming_response(assistant, data)
-  end
-
-  def handle_streaming_response(assistant, data)
-    transmit_start_message
-    buffer = stream_response(assistant, data)
-    transmit_final_message(buffer)
-  end
-
-  def transmit_start_message
+    # Send start message
     transmit({
       response: {},
-      message_type: "assistant-start",
+      message_type: "assistant-start", 
       timestamp: Time.current
     })
-  end
 
-  # Example chunks from Anthropic API:
-  #
-  # Initial message start:
-  # {"type"=>"message_start",
-  #  "message"=>
-  #   {"id"=>"msg_01Le2vtbcmyqjGWuw7ghR4J7",
-  #    "type"=>"message",
-  #    "role"=>"assistant", 
-  #    "model"=>"claude-3-5-sonnet-20240620",
-  #    "content"=>[],
-  #    "stop_reason"=>nil,
-  #    "stop_sequence"=>nil,
-  #    "usage"=>{"input_tokens"=>9, "cache_creation_input_tokens"=>0, "cache_read_input_tokens"=>0, "output_tokens"=>1}}}
-  #
-  # Content block start:
-  # {"type"=>"content_block_start", "index"=>0, "content_block"=>{"type"=>"text", "text"=>""}}
-  #
-  # Ping:
-  # {"type"=>"ping"}
-  #
-  # Content block delta with text:
-  # {"type"=>"content_block_delta", "index"=>0, "delta"=>{"type"=>"text_delta", "text"=>"Hi"}}
-  def stream_response(assistant, data)
-    Rails.logger.info "Starting stream_response..."
-    chunk_count = 0
-    buffer = ""
-    
-    begin
-      Rails.logger.debug "Sending message to assistant: #{data["message"]}"
-      
-      response = assistant.add_message_and_run!(content: data["message"]) do |chunk|
-        chunk_count += 1
-        Rails.logger.debug "Chunk ##{chunk_count}: #{chunk.inspect}"
-        
-        if chunk["type"] == "content_block_delta" && chunk.dig("delta", "type") == "text_delta"
-          chunk_text = chunk.dig("delta", "text").to_s
-          unless chunk_text.empty?
-            Rails.logger.debug "Processing chunk ##{chunk_count}: '#{chunk_text}'"
-            buffer += chunk_text
-            transmit({
-              response: chunk_text,
-              message_type: "assistant-chunk",
-              timestamp: Time.current,
-              chunk_number: chunk_count
-            })
-            Rails.logger.debug "Transmitted chunk ##{chunk_count}"
-          end
-        else
-          Rails.logger.debug "Skipping non-text chunk ##{chunk_count}: #{chunk["type"]}"
-        end
-      end
-      
-      Rails.logger.debug "Assistant response object: #{response.inspect}"
-      
-      if buffer.empty?
-        Rails.logger.warn "No content received in buffer"
-        # Get the content from the last assistant message if available
-        if response.is_a?(Array) && (last_message = response.last) && last_message.respond_to?(:content)
-          buffer = last_message.content
-          transmit_chunk(buffer)
-        else
-          buffer = "I apologize, but I wasn't able to generate a response. Please try again."
-          transmit_chunk(buffer)
-        end
-      end
-      
-      buffer
-    rescue Faraday::Error => e
-      begin
-        error_response = e.response[:body]  # Already a Hash
-        error_message = error_response.dig("error", "message")
-        error_type = error_response.dig("error", "type")
-        
-        Rails.logger.error "API Error: #{error_type} - #{error_message}"
-        Rails.logger.error "Full response body: #{error_response}"
-        
-        # Transmit a user-friendly error message
-        transmit({
-          response: "Sorry, there was an API error: #{error_message}",
-          message_type: "error",
-          timestamp: Time.current
-        })
-      rescue => parse_error
-        Rails.logger.error "Failed to process error response: #{parse_error.message}"
-        Rails.logger.error "Original error body: #{e.response[:body]}"
-        raise e
-      end
-    rescue => e
-      Rails.logger.error "Error in stream_response: #{e.class} - #{e.message}"
-      Rails.logger.error e.backtrace.join("\n")
-      raise
-    end
-  end
+    # Run the assistant with the message
+    assistant.add_message_and_run!(content: data["message"])
 
-  def transmit_chunk(chunk)
+    # Send completion message
     transmit({
-      response: chunk,
-      message_type: "assistant-chunk",
-      timestamp: Time.current
-    })
-  end
-
-  def transmit_final_message(buffer)
-    Rails.logger.info "Transmitting final message with buffer length: #{buffer.length}"
-    
-    response_data = {
-      response: buffer,
       message_type: "assistant-complete",
       timestamp: Time.current
-    }
-    
-    # Log the first and last part of the buffer instead of the whole thing
-    preview_length = 100
-    Rails.logger.debug "Final message preview: #{buffer[0..preview_length]}... (#{buffer.length} chars total)"
-    transmit(response_data)
+    })
   end
+
 end
