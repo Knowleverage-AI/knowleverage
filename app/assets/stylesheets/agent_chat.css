@@ -238,7 +238,10 @@
 }
 
 @keyframes cursor-blink {
-  0%, 100% {
+  0% {
+    border-right-color: transparent;
+  }
+  100% {
     border-right-color: transparent;
   }
   50% {
