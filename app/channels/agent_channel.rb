@@ -145,10 +145,11 @@ class AgentChannel < ApplicationCable::Channel
       Rails.logger.debug "Final buffer content: #{buffer}"
       
       buffer
-  rescue => e
-    Rails.logger.error "Error in stream_response: #{e.class} - #{e.message}"
-    Rails.logger.error e.backtrace.join("\n")
-    raise
+    rescue => e
+      Rails.logger.error "Error in stream_response: #{e.class} - #{e.message}"
+      Rails.logger.error e.backtrace.join("\n")
+      raise
+    end
   end
 
   def transmit_chunk(chunk)
