@@ -31,17 +31,30 @@ export default class extends Controller {
         this.addSystemMessage(data.response)
         break
       case "assistant-start":
-        // Create a new message div for streaming
+        console.log("Creating new streaming div")
         this.currentStreamDiv = document.createElement("div")
         this.currentStreamDiv.classList.add("message", "assistant", "streaming")
+        // Add initial empty content
+        this.currentStreamDiv.textContent = ""
         this.messageLogTarget.appendChild(this.currentStreamDiv)
+        console.log("Streaming div created:", this.currentStreamDiv)
         break
       case "assistant-chunk":
-        // Append the chunk to the current message
+        console.log("Processing chunk:", {
+          chunk: data.response,
+          currentDiv: this.currentStreamDiv,
+          hasCurrentDiv: !!this.currentStreamDiv,
+          currentContent: this.currentStreamDiv?.textContent
+        })
         if (this.currentStreamDiv) {
-          console.log("Received chunk:", data.response)
           this.currentStreamDiv.textContent += data.response
+          console.log("After append:", {
+            newContent: this.currentStreamDiv.textContent,
+            streamingClass: this.currentStreamDiv.classList.contains("streaming")
+          })
           this.scrollToBottom()
+        } else {
+          console.warn("No streaming div available for chunk")
         }
         break
       case "assistant-complete":

@@ -128,28 +128,32 @@ class AgentChannel < ApplicationCable::Channel
   # Content block delta with text:
   # {"type"=>"content_block_delta", "index"=>0, "delta"=>{"type"=>"text_delta", "text"=>"Hi"}}
   def stream_response(assistant, data)
-    buffer = ""
-    hit_token_limit = false
     Rails.logger.info "Starting stream_response..."
+    chunk_count = 0
+    buffer = ""
     
     begin
       Rails.logger.debug "Sending message to assistant: #{data["message"]}"
       
       response = assistant.add_message_and_run!(content: data["message"]) do |chunk|
-        Rails.logger.debug "Raw chunk received in stream_response: #{chunk.inspect}"
+        chunk_count += 1
+        Rails.logger.debug "Chunk ##{chunk_count}: #{chunk.inspect}"
         
         if chunk["type"] == "content_block_delta" && chunk.dig("delta", "type") == "text_delta"
           chunk_text = chunk.dig("delta", "text").to_s
           unless chunk_text.empty?
-            Rails.logger.debug "Adding chunk text: #{chunk_text}"
+            Rails.logger.debug "Processing chunk ##{chunk_count}: '#{chunk_text}'"
             buffer += chunk_text
-            # Transmit each chunk immediately
             transmit({
               response: chunk_text,
               message_type: "assistant-chunk",
-              timestamp: Time.current
+              timestamp: Time.current,
+              chunk_number: chunk_count
             })
+            Rails.logger.debug "Transmitted chunk ##{chunk_count}"
           end
+        else
+          Rails.logger.debug "Skipping non-text chunk ##{chunk_count}: #{chunk["type"]}"
         end
       end
       
