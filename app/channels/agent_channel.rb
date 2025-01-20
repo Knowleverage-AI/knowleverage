@@ -42,8 +42,9 @@ class AgentChannel < ApplicationCable::Channel
   def process_and_transmit_response(data)
     Rails.logger.info "Processing message..."
     processed = process_message(data)
-    Rails.logger.info "Processed response: #{processed.inspect}"
-    transmit(processed)
+    
+    # Don't return the processed boolean
+    Rails.logger.info "Message processing completed"
   end
 
   def handle_error(error)
@@ -110,37 +111,40 @@ class AgentChannel < ApplicationCable::Channel
   # {"type"=>"content_block_delta", "index"=>0, "delta"=>{"type"=>"text_delta", "text"=>"Hi"}}
   def stream_response(llm, data)
     buffer = ""
-    Rails.logger.info "Sending message to Anthropic: #{data["message"]}"
+    Rails.logger.info "Starting stream_response..."
     
-    llm.chat(
-      messages: [{role: "user", content: data["message"]}],
-      stream: true
-    ) do |chunk|
-      Rails.logger.info "Received chunk: #{chunk.inspect}"
-      
-      # Extract text content from the chunk based on its structure
-      chunk_text = if chunk.is_a?(Hash)
-        case chunk["type"]
-        when "content_block_delta"
-          # Handle the nested text_delta structure
-          delta = chunk["delta"]
-          delta["type"] == "text_delta" ? delta["text"] : ""
-        else
-          "" # Ignore other chunk types
+    begin
+      llm.chat(
+        messages: [{role: "user", content: data["message"]}],
+        stream: true
+      ) do |chunk|
+        Rails.logger.debug "Raw chunk received: #{chunk.inspect}"
+        
+        if chunk.is_a?(Hash)
+          case chunk["type"]
+          when "message_start"
+            Rails.logger.info "Stream started with message ID: #{chunk["message"]["id"]}"
+          when "content_block_delta"
+            chunk_text = chunk.dig("delta", "text").to_s
+            unless chunk_text.empty?
+              Rails.logger.debug "Adding chunk text: #{chunk_text}"
+              buffer += chunk_text
+              transmit_chunk(chunk_text)
+            end
+          when "message_delta"
+            if chunk["delta"]["stop_reason"] == "max_tokens"
+              Rails.logger.warn "Response hit max_tokens limit! Buffer length: #{buffer.length}"
+            end
+          when "message_stop"
+            Rails.logger.info "Stream completed. Final buffer length: #{buffer.length}"
+          end
         end
-      else
-        chunk.to_s
       end
-
-      unless chunk_text.empty?
-        buffer += chunk_text
-        transmit_chunk(chunk_text)
-      end
-    end
-    
-    # Log the complete buffer for debugging
-    Rails.logger.info "Complete response buffer: #{buffer}"
-    buffer
+      
+      Rails.logger.info "Stream processing completed"
+      Rails.logger.debug "Final buffer content: #{buffer}"
+      
+      buffer
   rescue => e
     Rails.logger.error "Error in stream_response: #{e.class} - #{e.message}"
     Rails.logger.error e.backtrace.join("\n")
@@ -156,10 +160,16 @@ class AgentChannel < ApplicationCable::Channel
   end
 
   def transmit_final_message(buffer)
-    transmit({
+    Rails.logger.info "Transmitting final message with buffer length: #{buffer.length}"
+    
+    # Don't transmit raw boolean response
+    response_data = {
       response: buffer,
       message_type: "assistant-complete",
       timestamp: Time.current
-    })
+    }
+    
+    Rails.logger.debug "Final message data: #{response_data.inspect}"
+    transmit(response_data)
   end
 end
