@@ -244,7 +244,7 @@
 }
 
 @keyframes cursor-blink {
-  0%, 100% {
+  from, to {
     opacity: 0;
   }
   50% {
