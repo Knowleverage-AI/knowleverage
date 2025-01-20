@@ -233,7 +233,6 @@
   }
 }
 .message.assistant.streaming {
-  border: 2px solid red; /* Temporary debug style */
 }
 
 .message.assistant.streaming::after {
