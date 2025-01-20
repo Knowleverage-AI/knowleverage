@@ -71,12 +71,15 @@ class AgentChannel < ApplicationCable::Channel
       llm: Langchain::LLM::Anthropic.new(
         api_key: api_key,
         default_options: {
-          temperature: 0.7,  # Add some creativity while keeping responses focused
-          max_tokens: 4096   # Set a reasonable token limit
+          temperature: 0.7,
+          max_tokens: 4096,
+          model: "claude-3-sonnet-20240229"  # Explicitly specify the model
         }
       ),
       instructions: "You are a helpful AI assistant. Respond concisely and accurately to user queries."
-    )
+    ) do |response_chunk|
+      Rails.logger.debug "Response chunk in initialization block: #{response_chunk.inspect}"
+    end
 
     handle_streaming_response(assistant, data)
   end
@@ -123,7 +126,10 @@ class AgentChannel < ApplicationCable::Channel
     Rails.logger.info "Starting stream_response..."
     
     begin
-      assistant.add_message_and_run!(content: data["message"]) do |chunk|
+      # Add debug logging for the message being sent
+      Rails.logger.debug "Sending message to assistant: #{data["message"]}"
+      
+      response = assistant.add_message_and_run!(content: data["message"]) do |chunk|
         Rails.logger.debug "Raw chunk received: #{chunk.inspect}"
         
         if chunk.is_a?(Hash)
@@ -148,12 +154,23 @@ class AgentChannel < ApplicationCable::Channel
           when "message_stop"
             Rails.logger.info "Stream completed. Final buffer length: #{buffer.length}"
           end
+        else
+          Rails.logger.warn "Received non-Hash chunk: #{chunk.inspect}"
         end
       end
+      
+      # Add debug logging for the response
+      Rails.logger.debug "Assistant response: #{response.inspect}"
       
       Rails.logger.info "Stream processing completed"
       if hit_token_limit
         Rails.logger.warn "Response was truncated due to token limit"
+      end
+      
+      if buffer.empty?
+        Rails.logger.warn "No content received in buffer"
+        buffer = "I apologize, but I wasn't able to generate a response. Please try again."
+        transmit_chunk(buffer)
       end
       
       buffer
