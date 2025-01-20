@@ -211,16 +211,20 @@
     width: 100%;
   }
 }
-.message.assistant {
-  /* Add a blinking cursor effect during streaming */
-  &:last-child::after {
-    content: '▋';
-    display: inline-block;
-    vertical-align: bottom;
-    animation: blink 1s step-start infinite;
+.message.assistant.streaming {
+  border-right: 2px solid black;
+  animation: cursor-blink 1s step-end infinite;
+}
+
+@keyframes cursor-blink {
+  0%, 100% {
+    border-right-color: transparent;
+  }
+  50% {
+    border-right-color: black;
   }
 }
 
-@keyframes blink {
-  50% { opacity: 0; }
+.message.assistant {
+  border-right: 2px solid transparent;
 }

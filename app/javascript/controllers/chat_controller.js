@@ -33,7 +33,7 @@ export default class extends Controller {
       case "assistant-start":
         // Create a new message div for streaming
         this.currentStreamDiv = document.createElement("div")
-        this.currentStreamDiv.classList.add("message", "assistant")
+        this.currentStreamDiv.classList.add("message", "assistant", "streaming")
         this.messageLogTarget.appendChild(this.currentStreamDiv)
         break
       case "assistant-chunk":
@@ -44,7 +44,10 @@ export default class extends Controller {
         }
         break
       case "assistant-complete":
-        // Cleanup after streaming complete
+        // Remove streaming class when complete
+        if (this.currentStreamDiv) {
+          this.currentStreamDiv.classList.remove("streaming")
+        }
         this.currentStreamDiv = null
         this.setProcessing(false)
         break
