@@ -75,7 +75,7 @@ class AgentChannel < ApplicationCable::Channel
           max_tokens: 4096   # Set a reasonable token limit
         }
       ),
-      system_prompt: "You are a helpful AI assistant. Respond concisely and accurately to user queries."
+      instructions: "You are a helpful AI assistant. Respond concisely and accurately to user queries."
     )
 
     handle_streaming_response(assistant, data)
