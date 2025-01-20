@@ -125,33 +125,32 @@ class AgentChannel < ApplicationCable::Channel
         callbacks: [
           {
             chunk: ->(chunk) {
-        Rails.logger.debug "Raw chunk received: #{chunk.inspect}"
-        
-        if chunk.is_a?(Hash)
-          case chunk["type"]
-          when "message_start"
-            Rails.logger.info "Stream started with message ID: #{chunk["message"]["id"]}"
-          when "content_block_delta"
-            chunk_text = chunk.dig("delta", "text").to_s
-            unless chunk_text.empty?
-              Rails.logger.debug "Adding chunk text: #{chunk_text}"
-              buffer += chunk_text
-              transmit_chunk(chunk_text)
-            end
-          when "message_delta"
-            if chunk["delta"]["stop_reason"] == "max_tokens"
-              hit_token_limit = true
-              Rails.logger.warn "Response hit max_tokens limit! Buffer length: #{buffer.length}"
-              # Add a note about truncation
-              truncation_note = "\n\n[Note: Response was truncated due to length limits]"
-              buffer += truncation_note
-              transmit_chunk(truncation_note)
-            end
-          when "message_stop"
-            Rails.logger.info "Stream completed. Final buffer length: #{buffer.length}"
-          end
-        end
-            end
+              Rails.logger.debug "Raw chunk received: #{chunk.inspect}"
+              
+              if chunk.is_a?(Hash)
+                case chunk["type"]
+                when "message_start"
+                  Rails.logger.info "Stream started with message ID: #{chunk["message"]["id"]}"
+                when "content_block_delta"
+                  chunk_text = chunk.dig("delta", "text").to_s
+                  unless chunk_text.empty?
+                    Rails.logger.debug "Adding chunk text: #{chunk_text}"
+                    buffer += chunk_text
+                    transmit_chunk(chunk_text)
+                  end
+                when "message_delta"
+                  if chunk["delta"]["stop_reason"] == "max_tokens"
+                    hit_token_limit = true
+                    Rails.logger.warn "Response hit max_tokens limit! Buffer length: #{buffer.length}"
+                    truncation_note = "\n\n[Note: Response was truncated due to length limits]"
+                    buffer += truncation_note
+                    transmit_chunk(truncation_note)
+                  end
+                when "message_stop"
+                  Rails.logger.info "Stream completed. Final buffer length: #{buffer.length}"
+                end
+              end
+            }
           }
         ]
       )
