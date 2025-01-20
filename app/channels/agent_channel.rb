@@ -75,7 +75,7 @@ class AgentChannel < ApplicationCable::Channel
   def handle_streaming_response(llm, data)
     transmit_start_message
     buffer = stream_response(llm, data)
-    transmit_completion_message(buffer)
+    transmit_final_message(buffer)
   end
 
   def transmit_start_message
@@ -130,7 +130,7 @@ class AgentChannel < ApplicationCable::Channel
     })
   end
 
-  def transmit_completion_message(buffer)
+  def transmit_final_message(buffer)
     transmit({
       response: buffer,
       message_type: "assistant-complete",
