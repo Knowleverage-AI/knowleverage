@@ -117,8 +117,7 @@ class AgentChannel < ApplicationCable::Channel
     begin
       llm.chat(
         messages: [{role: "user", content: data["message"]}],
-        # Increased max tokens 10x from 1024 to 10240
-        max_tokens: 10240,
+        max_tokens: 4096,
         stream: true
       ) do |chunk|
         Rails.logger.debug "Raw chunk received: #{chunk.inspect}"
@@ -155,6 +154,25 @@ class AgentChannel < ApplicationCable::Channel
       end
       
       buffer
+    rescue Faraday::Error => e
+      begin
+        error_json = JSON.parse(e.response[:body])
+        error_message = error_json.dig("error", "message") || error_json["error"] || e.message
+        error_type = error_json.dig("error", "type") || error_json["type"] || "unknown"
+        
+        Rails.logger.error "API Error: #{error_type} - #{error_message}"
+        Rails.logger.error "Full response body: #{e.response[:body]}"
+        
+        # Transmit a user-friendly error message
+        transmit({
+          response: "Sorry, there was an API error: #{error_message}",
+          message_type: "error",
+          timestamp: Time.current
+        })
+      rescue JSON::ParseError
+        Rails.logger.error "Failed to parse error response: #{e.response[:body]}"
+        raise e
+      end
     rescue => e
       Rails.logger.error "Error in stream_response: #{e.class} - #{e.message}"
       Rails.logger.error e.backtrace.join("\n")
