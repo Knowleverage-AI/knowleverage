@@ -123,8 +123,8 @@ class AgentChannel < ApplicationCable::Channel
     Rails.logger.info "Starting stream_response..."
     
     begin
-      assistant.chat(
-        message: data["message"],
+      assistant.add_message_and_run!(
+        content: data["message"],
         callbacks: [
           {
             chunk: ->(chunk) {
