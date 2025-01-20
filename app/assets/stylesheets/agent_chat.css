@@ -58,7 +58,7 @@
   background: #0056b3;
 }
 .agent-chat {
-  max-width: 800px;
+  max-width: 1120px;  /* Increased from 800px (40% larger) */
   margin: 0 auto;
   padding: 20px;
   font-family: system-ui, -apple-system, sans-serif;
@@ -95,6 +95,7 @@
   margin: 0.5rem 0;
   padding: 0.75rem 1rem;
   border-radius: 1rem;
+  width: fit-content;
   max-width: 80%;
   white-space: pre-wrap;
   word-wrap: break-word;
@@ -104,12 +105,15 @@
   background: #e3f2fd;
   margin-left: auto;
   border-bottom-right-radius: 0.25rem;
+  width: fit-content;
 }
 
 .message.assistant {
   background: #f5f5f5;
   margin-right: auto;
   border-bottom-left-radius: 0.25rem;
+  width: fit-content;
+  min-width: 200px;
 }
 
 .message.system {
@@ -118,6 +122,7 @@
   font-style: italic;
   max-width: 90%;
   text-align: center;
+  width: fit-content;
 }
 
 .message.error {
@@ -126,6 +131,7 @@
   color: #c62828;
   max-width: 90%;
   text-align: center;
+  width: fit-content;
 }
 
 .message-input {
@@ -194,9 +200,16 @@
 }
 
 /* Mobile responsiveness */
+@media (max-width: 1200px) {
+  .agent-chat {
+    max-width: 800px;
+  }
+}
+
 @media (max-width: 640px) {
   .agent-chat {
     padding: 10px;
+    max-width: 100%;
   }
 
   .message {
