@@ -66,20 +66,38 @@ class AgentChannel < ApplicationCable::Channel
     api_key = ENV.fetch("ANTHROPIC_API_KEY")
     Rails.logger.info "Using API key: #{api_key[0..3]}..."
 
-    # Create an Assistant with properly configured LLM
+    llm = Langchain::LLM::Anthropic.new(
+      api_key: api_key,
+      llm_options: {
+        stream: true  # Enable streaming at the client level
+      },
+      default_options: {
+        temperature: 0.7,
+        max_tokens: 4096,
+        model: "claude-3-sonnet-20240229",
+        stream: true  # Enable streaming at the request level
+      }
+    )
+
+    # Create an Assistant with streaming LLM
     assistant = Langchain::Assistant.new(
-      llm: Langchain::LLM::Anthropic.new(
-        api_key: api_key,
-        default_options: {
-          temperature: 0.7,
-          max_tokens: 4096,
-          model: "claude-3-sonnet-20240229",  # Explicitly specify the model
-          stream: true  # Enable streaming at the LLM level
-        }
-      ),
+      llm: llm,
       instructions: "You are a helpful AI assistant. Respond concisely and accurately to user queries."
     ) do |response_chunk|
       Rails.logger.debug "Response chunk in initialization block: #{response_chunk.inspect}"
+      
+      # Handle streaming chunks directly in the block
+      if response_chunk["type"] == "content_block_delta" && 
+         response_chunk.dig("delta", "type") == "text_delta"
+        chunk_text = response_chunk.dig("delta", "text").to_s
+        unless chunk_text.empty?
+          transmit({
+            response: chunk_text,
+            message_type: "assistant-chunk",
+            timestamp: Time.current
+          })
+        end
+      end
     end
 
     handle_streaming_response(assistant, data)
