@@ -126,51 +126,44 @@ class AgentChannel < ApplicationCable::Channel
     Rails.logger.info "Starting stream_response..."
     
     begin
-      # Add debug logging for the message being sent
       Rails.logger.debug "Sending message to assistant: #{data["message"]}"
       
+      # Create a block that will handle the streaming response
       response = assistant.add_message_and_run!(content: data["message"]) do |chunk|
-        Rails.logger.debug "Raw chunk received: #{chunk.inspect}"
+        Rails.logger.debug "Raw chunk received in stream_response: #{chunk.inspect}"
         
-        if chunk.is_a?(Hash)
-          case chunk["type"]
-          when "message_start"
-            Rails.logger.info "Stream started with message ID: #{chunk["message"]["id"]}"
-          when "content_block_delta"
+        case chunk["type"]
+        when "content_block_delta"
+          if chunk.dig("delta", "type") == "text_delta"
             chunk_text = chunk.dig("delta", "text").to_s
             unless chunk_text.empty?
               Rails.logger.debug "Adding chunk text: #{chunk_text}"
               buffer += chunk_text
               transmit_chunk(chunk_text)
             end
-          when "message_delta"
-            if chunk["delta"]["stop_reason"] == "max_tokens"
-              hit_token_limit = true
-              Rails.logger.warn "Response hit max_tokens limit! Buffer length: #{buffer.length}"
-              truncation_note = "\n\n[Note: Response was truncated due to length limits]"
-              buffer += truncation_note
-              transmit_chunk(truncation_note)
-            end
-          when "message_stop"
-            Rails.logger.info "Stream completed. Final buffer length: #{buffer.length}"
           end
-        else
-          Rails.logger.warn "Received non-Hash chunk: #{chunk.inspect}"
+        when "message_delta"
+          if chunk.dig("delta", "stop_reason") == "max_tokens"
+            hit_token_limit = true
+            truncation_note = "\n\n[Note: Response was truncated due to length limits]"
+            buffer += truncation_note
+            transmit_chunk(truncation_note)
+          end
         end
       end
       
-      # Add debug logging for the response
-      Rails.logger.debug "Assistant response: #{response.inspect}"
-      
-      Rails.logger.info "Stream processing completed"
-      if hit_token_limit
-        Rails.logger.warn "Response was truncated due to token limit"
-      end
+      Rails.logger.debug "Assistant response object: #{response.inspect}"
       
       if buffer.empty?
         Rails.logger.warn "No content received in buffer"
-        buffer = "I apologize, but I wasn't able to generate a response. Please try again."
-        transmit_chunk(buffer)
+        # Get the content from the last assistant message if available
+        if response.is_a?(Array) && (last_message = response.last) && last_message.respond_to?(:content)
+          buffer = last_message.content
+          transmit_chunk(buffer)
+        else
+          buffer = "I apologize, but I wasn't able to generate a response. Please try again."
+          transmit_chunk(buffer)
+        end
       end
       
       buffer
