@@ -66,16 +66,21 @@ class AgentChannel < ApplicationCable::Channel
     api_key = ENV.fetch("ANTHROPIC_API_KEY")
     Rails.logger.info "Using API key: #{api_key[0..3]}..."
 
-    llm = Langchain::LLM::Anthropic.new(
-      api_key: api_key
+    # Create an Assistant instead of direct LLM
+    assistant = Langchain::Assistant.new(
+      llm: Langchain::LLM::Anthropic.new(
+        api_key: api_key,
+        streaming: true
+      ),
+      system_prompt: "You are a helpful AI assistant. Respond concisely and accurately to user queries."
     )
 
-    handle_streaming_response(llm, data)
+    handle_streaming_response(assistant, data)
   end
 
-  def handle_streaming_response(llm, data)
+  def handle_streaming_response(assistant, data)
     transmit_start_message
-    buffer = stream_response(llm, data)
+    buffer = stream_response(assistant, data)
     transmit_final_message(buffer)
   end
 
@@ -109,17 +114,17 @@ class AgentChannel < ApplicationCable::Channel
   #
   # Content block delta with text:
   # {"type"=>"content_block_delta", "index"=>0, "delta"=>{"type"=>"text_delta", "text"=>"Hi"}}
-  def stream_response(llm, data)
+  def stream_response(assistant, data)
     buffer = ""
     hit_token_limit = false
     Rails.logger.info "Starting stream_response..."
     
     begin
-      llm.chat(
-        messages: [{role: "user", content: data["message"]}],
-        max_tokens: 8_000,
-        stream: true
-      ) do |chunk|
+      assistant.chat(
+        message: data["message"],
+        callbacks: [
+          {
+            chunk: ->(chunk) {
         Rails.logger.debug "Raw chunk received: #{chunk.inspect}"
         
         if chunk.is_a?(Hash)
@@ -146,7 +151,10 @@ class AgentChannel < ApplicationCable::Channel
             Rails.logger.info "Stream completed. Final buffer length: #{buffer.length}"
           end
         end
-      end
+            end
+          }
+        ]
+      )
       
       Rails.logger.info "Stream processing completed"
       if hit_token_limit
