@@ -117,7 +117,7 @@ class AgentChannel < ApplicationCable::Channel
     begin
       llm.chat(
         messages: [{role: "user", content: data["message"]}],
-        max_tokens: 4096,
+        max_tokens: 4096000,
         stream: true
       ) do |chunk|
         Rails.logger.debug "Raw chunk received: #{chunk.inspect}"
@@ -156,6 +156,7 @@ class AgentChannel < ApplicationCable::Channel
       buffer
     rescue Faraday::Error => e
       begin
+        binding.pry
         error_json = JSON.parse(e.response[:body])
         error_message = error_json.dig("error", "message") || error_json["error"] || e.message
         error_type = error_json.dig("error", "type") || error_json["type"] || "unknown"
